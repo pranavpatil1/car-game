@@ -12,10 +12,10 @@ export class Car extends Vehicle {
       acceleration: 0.01,
       ...config
     })
-    
+
     this.createCarMesh()
   }
-  
+
   createCarMesh() {
     // Car body
     const carBodyGeometry = new THREE.BoxGeometry(2, 0.5, 4)
@@ -24,7 +24,7 @@ export class Car extends Vehicle {
     carBody.position.y = 0.5
     carBody.castShadow = true
     this.mesh.add(carBody)
-    
+
     // Car cabin
     const cabinGeometry = new THREE.BoxGeometry(1.5, 0.6, 2)
     const cabinMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 })
@@ -33,39 +33,39 @@ export class Car extends Vehicle {
     cabin.position.z = -0.5
     cabin.castShadow = true
     this.mesh.add(cabin)
-    
+
     // Wheels
     this.addWheels()
-    
+
     // Headlights
     this.addHeadlights()
   }
-  
+
   addWheels() {
     const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32)
     const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 })
-    
+
     // Front left wheel
     const wheelFL = new THREE.Mesh(wheelGeometry, wheelMaterial)
     wheelFL.rotation.z = Math.PI / 2
     wheelFL.position.set(-1.1, 0.4, 1.2)
     wheelFL.castShadow = true
     this.mesh.add(wheelFL)
-    
+
     // Front right wheel
     const wheelFR = new THREE.Mesh(wheelGeometry, wheelMaterial)
     wheelFR.rotation.z = Math.PI / 2
     wheelFR.position.set(1.1, 0.4, 1.2)
     wheelFR.castShadow = true
     this.mesh.add(wheelFR)
-    
+
     // Rear left wheel
     const wheelRL = new THREE.Mesh(wheelGeometry, wheelMaterial)
     wheelRL.rotation.z = Math.PI / 2
     wheelRL.position.set(-1.1, 0.4, -1.2)
     wheelRL.castShadow = true
     this.mesh.add(wheelRL)
-    
+
     // Rear right wheel
     const wheelRR = new THREE.Mesh(wheelGeometry, wheelMaterial)
     wheelRR.rotation.z = Math.PI / 2
@@ -73,7 +73,7 @@ export class Car extends Vehicle {
     wheelRR.castShadow = true
     this.mesh.add(wheelRR)
   }
-  
+
   addHeadlights() {
     const headlightGeometry = new THREE.SphereGeometry(0.2, 16, 16)
     const headlightMaterial = new THREE.MeshStandardMaterial({
@@ -81,19 +81,19 @@ export class Car extends Vehicle {
       emissive: 0xffffcc,
       emissiveIntensity: 0.5,
     })
-    
+
     const headlightL = new THREE.Mesh(headlightGeometry, headlightMaterial)
     headlightL.position.set(-0.7, 0.5, 2)
     this.mesh.add(headlightL)
-    
+
     const headlightR = new THREE.Mesh(headlightGeometry, headlightMaterial)
     headlightR.position.set(0.7, 0.5, 2)
     this.mesh.add(headlightR)
   }
-  
+
   addToWorld(world: World) {
     super.addToWorld(world)
-    
+
     // Set up camera to follow car
     world.camera.position.set(
       this.position.x - Math.sin(this.rotation.y) * 8,
@@ -102,19 +102,32 @@ export class Car extends Vehicle {
     )
     world.camera.lookAt(this.position)
   }
-  
+
   update(delta: number = 1) {
     super.update(delta)
-    
-    // Update camera to follow car
+
+    // Update camera to follow car with improved isometric offset
     if (this.world) {
+      // Reduced offset values to bring camera closer to car
+      const offsetDistance = 15; // Reduced from 25
+      const heightOffset = 12;   // Reduced from 20
+
+      // Calculate camera position with closer offset
       const cameraOffset = new THREE.Vector3(
-        -Math.sin(this.rotation.y) * 8,
-        5 + this.position.y,
-        -Math.cos(this.rotation.y) * 8
-      )
-      this.world.camera.position.copy(this.position).add(cameraOffset)
-      this.world.camera.lookAt(this.mesh.position)
+        offsetDistance,
+        heightOffset,
+        offsetDistance
+      );
+
+      // Apply rotation to maintain consistent view relative to car
+      const targetPosition = this.position.clone();
+
+      // Set camera position and target
+      this.world.camera.position.copy(targetPosition).add(cameraOffset);
+      this.world.camera.lookAt(targetPosition);
+
+      // Update camera frustum to prevent clipping
+      this.world.camera.updateProjectionMatrix();
     }
   }
 }
