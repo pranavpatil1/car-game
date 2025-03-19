@@ -79,7 +79,7 @@ export class Car extends Vehicle {
     const headlightMaterial = new THREE.MeshStandardMaterial({
       color: 0xffffcc,
       emissive: 0xffffcc,
-      emissiveIntensity: 0.5,
+      emissiveIntensity: 4.0, // Increased from 0.5
     })
 
     const headlightL = new THREE.Mesh(headlightGeometry, headlightMaterial)
@@ -89,6 +89,33 @@ export class Car extends Vehicle {
     const headlightR = new THREE.Mesh(headlightGeometry, headlightMaterial)
     headlightR.position.set(0.7, 0.5, 2)
     this.mesh.add(headlightR)
+
+    // Strengthen the actual light sources
+    const leftLight = new THREE.SpotLight(0xffffcc, 5) // Increased intensity from 2 to 5
+    leftLight.position.set(-0.7, 0.5, 2)
+    leftLight.angle = Math.PI / 5 // Slightly wider angle
+    leftLight.penumbra = 0.15
+    leftLight.distance = 50 // Increased from 30
+    leftLight.decay = 1.5 // Added decay parameter for more realistic light falloff
+    leftLight.castShadow = true
+    leftLight.shadow.mapSize.width = 1024 // Better shadow quality
+    leftLight.shadow.mapSize.height = 1024
+    leftLight.target.position.set(-0.7, 0, 15) // Farther target for longer beam
+    this.mesh.add(leftLight)
+    this.mesh.add(leftLight.target)
+
+    const rightLight = new THREE.SpotLight(0xffffcc, 5) // Increased intensity from 2 to 5
+    rightLight.position.set(0.7, 0.5, 2)
+    rightLight.angle = Math.PI / 5 // Slightly wider angle
+    rightLight.penumbra = 0.15
+    rightLight.distance = 50 // Increased from 30
+    rightLight.decay = 1.5 // Added decay parameter for more realistic light falloff
+    rightLight.castShadow = true
+    rightLight.shadow.mapSize.width = 1024 // Better shadow quality
+    rightLight.shadow.mapSize.height = 1024
+    rightLight.target.position.set(0.7, 0, 15) // Farther target for longer beam
+    this.mesh.add(rightLight)
+    this.mesh.add(rightLight.target)
   }
 
   addToWorld(world: World) {
@@ -106,27 +133,20 @@ export class Car extends Vehicle {
   update(delta: number = 1) {
     super.update(delta)
 
-    // Update camera to follow car with improved isometric offset
     if (this.world) {
-      // Reduced offset values to bring camera closer to car
-      const offsetDistance = 15; // Reduced from 25
-      const heightOffset = 12;   // Reduced from 20
+      // Existing camera update code...
+      const offsetDistance = 15;
+      const heightOffset = 20;
 
-      // Calculate camera position with closer offset
       const cameraOffset = new THREE.Vector3(
         offsetDistance,
         heightOffset,
         offsetDistance
       );
 
-      // Apply rotation to maintain consistent view relative to car
       const targetPosition = this.position.clone();
-
-      // Set camera position and target
       this.world.camera.position.copy(targetPosition).add(cameraOffset);
       this.world.camera.lookAt(targetPosition);
-
-      // Update camera frustum to prevent clipping
       this.world.camera.updateProjectionMatrix();
     }
   }
