@@ -57,9 +57,9 @@ export class Vehicle extends Entity {
     this.velocity.set(0, 0, 0)
     
     // Apply movement based on keys pressed
-    if (this.controls.isPressed("w")) {
+    if (this.controls.isPressed("s")) {
       this.velocity.z = -this.config.maxSpeed * delta
-    } else if (this.controls.isPressed("s")) {
+    } else if (this.controls.isPressed("w")) {
       this.velocity.z = this.config.maxSpeed * delta
     }
     
