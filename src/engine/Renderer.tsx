@@ -1,31 +1,29 @@
 import * as THREE from "three"
 
 export class Renderer {
-  renderer: THREE.WebGLRenderer
   domElement: HTMLCanvasElement
+  webGLRenderer: THREE.WebGLRenderer
 
   constructor(container: HTMLDivElement, width: number, height: number) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
-    this.renderer.setSize(width, height)
+    this.webGLRenderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    })
+    this.webGLRenderer.setSize(width, height)
+    this.webGLRenderer.setPixelRatio(window.devicePixelRatio)
+    this.webGLRenderer.shadowMap.enabled = true
+    this.webGLRenderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-    // Improved shadow settings
-    this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    this.renderer.shadowMap.autoUpdate = true
-    this.renderer.shadowMap.needsUpdate = true
-
-    // Set pixel ratio for better quality
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-
-    container.appendChild(this.renderer.domElement)
-    this.domElement = this.renderer.domElement
-  }
-
-  setSize(width: number, height: number) {
-    this.renderer.setSize(width, height)
+    this.domElement = this.webGLRenderer.domElement
+    container.appendChild(this.domElement)
   }
 
   render(scene: THREE.Scene, camera: THREE.Camera) {
-    this.renderer.render(scene, camera)
+    this.webGLRenderer.render(scene, camera)
+  }
+
+  setSize(width: number, height: number) {
+    this.webGLRenderer.setSize(width, height)
   }
 }

@@ -7,6 +7,7 @@ import { Physics } from "./Physics"
 import { Entity } from "./Entity"
 import { Renderer } from "./Renderer"
 import { DayNightCycle } from "./DayNightCycle"
+import { PostProcess } from './PostProcess'
 
 export class World {
   scene: THREE.Scene
@@ -17,6 +18,7 @@ export class World {
   controls: OrbitControls | null = null
   animationFrameId: number | null = null
   dayNightCycle: DayNightCycle
+  postProcess: PostProcess
 
   constructor(container: HTMLDivElement) {
     // Scene setup
@@ -30,6 +32,13 @@ export class World {
 
     // Renderer setup
     this.renderer = new Renderer(container, window.innerWidth, window.innerHeight)
+
+    // Post-processing setup
+    this.postProcess = new PostProcess(
+      this.renderer.webGLRenderer,
+      this.scene,
+      this.camera
+    )
 
     // Physics setup
     this.physics = new Physics()
@@ -81,14 +90,17 @@ export class World {
     // Update day-night cycle
     this.dayNightCycle.update()
 
+    // Update post-processing based on time of day
+    this.postProcess.updateBloomForTimeOfDay(this.dayNightCycle.getTime())
+
     // Update physics
     this.physics.update()
 
     // Update all entities
     this.entities.forEach(entity => entity.update())
 
-    // Render scene
-    this.renderer.render(this.scene, this.camera)
+    // Render with post-processing
+    this.postProcess.render()
   }
 
   handleResize = () => {
@@ -99,6 +111,9 @@ export class World {
     this.camera.updateProjectionMatrix()
 
     this.renderer.setSize(width, height)
+
+    // Update post-processing size
+    this.postProcess.resize(width, height)
   }
 }
 

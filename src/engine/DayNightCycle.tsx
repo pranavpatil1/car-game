@@ -14,6 +14,9 @@ export class DayNightCycle {
   private sunLight: THREE.DirectionalLight | null = null
   private ambientLight: THREE.AmbientLight | null = null
 
+  // Add a minimum ambient light level property
+  private minAmbientIntensity: number = 0.2
+
   constructor(cycleDuration: number = 10) {
     this.cycleDuration = cycleDuration
     this.lastUpdate = performance.now()
@@ -101,8 +104,9 @@ export class DayNightCycle {
       this.sunLight.color.setHex(0xffffff)
     }
 
-    // Adjust ambient light for night
-    this.ambientLight.intensity = 0.1 + dayIntensity * 0.3
+    // Adjust ambient light for night with a minimum floor
+    const calculatedAmbientIntensity = 0.1 + dayIntensity * 0.3
+    this.ambientLight.intensity = Math.max(calculatedAmbientIntensity, this.minAmbientIntensity)
 
     // Night has bluer ambient light
     if (dayIntensity < 0.3) {
@@ -112,9 +116,9 @@ export class DayNightCycle {
     }
   }
 
-  // Getters and setters
+  // Getter for time
   getTime(): number {
-    return this.time
+    return this.time;
   }
 
   setTime(time: number) {

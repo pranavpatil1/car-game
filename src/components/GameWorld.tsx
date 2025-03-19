@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useWorld } from "../engine/World"
-import { Terrain } from "../entities/Terrain"
+import { City } from "../entities/City"
 import { Car } from "../entities/Car"
 
 interface GameWorldProps {
@@ -13,34 +13,34 @@ export default function GameWorld({ onLoaded }: GameWorldProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { world, isLoaded } = useWorld(containerRef)
   const [instructions, setInstructions] = useState(true)
-  
+
   useEffect(() => {
     if (!world) return
-    
-    // Add terrain
-    const terrain = new Terrain()
-    world.addEntity(terrain)
-    
+
+    // Add city
+    const city = new City()
+    world.addEntity(city)
+
     // Add car
     const car = new Car()
     world.addEntity(car)
-    
+
     // Add event listener to hide instructions
     const handleKeyDown = () => {
       setInstructions(false)
     }
-    
+
     window.addEventListener("keydown", handleKeyDown)
-    
+
     if (onLoaded) {
       onLoaded()
     }
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
   }, [world, onLoaded])
-  
+
   return (
     <div className="relative w-full h-screen">
       <div ref={containerRef} className="w-full h-full" />

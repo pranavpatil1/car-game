@@ -9,7 +9,7 @@ export class Terrain extends Entity {
     // Create larger ground to prevent seeing edges
     const groundGeometry = new THREE.PlaneGeometry(300, 300)
     const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1a5e1a,
+      color: 0x1a5e1a, // Keep the green color (0x1a5e1a is a dark green)
       side: THREE.DoubleSide,
       roughness: 0.8,
     })
