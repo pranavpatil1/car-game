@@ -28,4 +28,11 @@ export class Renderer {
   render(scene: THREE.Scene, camera: THREE.Camera) {
     this.renderer.render(scene, camera)
   }
+
+  dispose() {
+    if (this.renderer.domElement.parentNode) {
+      this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+    }
+    this.renderer.dispose();
+  }
 }

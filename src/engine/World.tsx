@@ -72,6 +72,9 @@ export class World {
       this.animationFrameId = null
     }
 
+    // Dispose renderer
+    this.renderer.dispose();
+
     window.removeEventListener("resize", this.handleResize)
   }
 

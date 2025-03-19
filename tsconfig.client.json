@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "outDir": "dist/client",
+    "rootDir": "src/client",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"]
+  },
+  "include": ["src/client/**/*", "src/components/**/*", "src/engine/**/*", "src/entities/**/*"],
+  "exclude": ["node_modules", "dist", "src/server"]
+}
