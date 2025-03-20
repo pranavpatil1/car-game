@@ -21,9 +21,23 @@ export default function GameWorld({ onLoaded }: GameWorldProps) {
     const terrain = new Terrain()
     world.addEntity(terrain)
     
-    // Add car
-    const car = new Car()
-    world.addEntity(car)
+    // Available car models
+    const carModels = [
+      './assets/cars/lamborghini.glb',
+      // Add all your car model paths here
+    ]
+
+    // Randomly select a car model
+    const randomCarModel = carModels[Math.floor(Math.random() * carModels.length)]
+
+    // Player car with random model
+    const playerCar = new Car({
+      meshConfig: { 
+        modelPath: randomCarModel,
+        bodyColor: 0xff0000 // Fallback color if model fails to load
+      }
+    })
+    world.addEntity(playerCar)
     
     // Add event listener to hide instructions
     const handleKeyDown = () => {

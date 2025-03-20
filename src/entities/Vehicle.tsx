@@ -23,6 +23,8 @@ export class Vehicle extends Entity {
   private engineSound: THREE.Audio | null = null
   private audioLoader: THREE.AudioLoader
   private audioListener: THREE.AudioListener
+  // Add a flag to indicate if this object should have gravity applied
+  ignoreGravity: boolean = true  // This will tell Physics system to skip gravity
 
   constructor(config: VehicleConfig) {
     super()
@@ -218,8 +220,17 @@ export class Vehicle extends Entity {
     
     for (let i = 0; i < intersects.length; i++) {
       const obj = intersects[i].object
-      // Skip if it's part of the vehicle or its children
-      if (this.mesh.children.includes(obj) || obj === this.mesh) continue
+      // Skip if the object is part of the vehicle's hierarchy
+      let isPartOfVehicle = false
+      let currentObj: THREE.Object3D | null = obj;
+      while (currentObj) {
+        if (currentObj === this.mesh) {
+          isPartOfVehicle = true;
+          break;
+        }
+        currentObj = currentObj.parent;
+      }
+      if (isPartOfVehicle) continue;
       
       // Found ground or ramp
       groundY = intersects[i].point.y
