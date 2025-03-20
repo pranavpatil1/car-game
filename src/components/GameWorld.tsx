@@ -56,7 +56,7 @@ export default function GameWorld({ onLoaded }: GameWorldProps) {
   }, [world, onLoaded])
   
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-[100dvh]">
       <div ref={containerRef} className="w-full h-full" />
       {instructions && (
         <div className="absolute top-0 left-0 right-0 p-4 bg-black bg-opacity-70 text-white text-center">
