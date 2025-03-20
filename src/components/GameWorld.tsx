@@ -82,6 +82,7 @@ export default function GameWorld({ onLoaded }: GameWorldProps) {
           ) : (
             <>
               <p>W - Move forward | S - Move backward | A/D - Turn</p>
+              <p>SPACE - Shoot | B - Brake</p>
               <p className="text-sm mt-2">Movement is relative to camera view</p>
             </>
           )}

@@ -181,8 +181,8 @@ export class Vehicle extends Entity {
     // Rotate velocity based on vehicle rotation
     const rotatedVelocity = this.velocity.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), this.rotation.y)
     
-    // Apply braking
-    if (this.controls.isPressed(" ")) {
+    // Apply braking - now using 'b' key instead of space
+    if (this.controls.isPressed("b")) {
       rotatedVelocity.multiplyScalar(this.config.braking)
       this.speed *= this.config.braking
     }
