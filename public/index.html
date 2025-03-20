@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO metadata -->
+    <meta name="description" content="A 3D car driving game built with React, Three.js and Cannon.js">
+    <meta name="keywords" content="3D, game, car, driving, three.js, react, cannon.js, physics">
+    <meta name="author" content="AI Developer">
+    
+    <!-- Open Graph / Social Media metadata -->
+    <meta property="og:title" content="3D Car Game">
+    <meta property="og:description" content="Drive a car in a 3D environment with physics">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/thumbnail.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/logo192.png">
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/static/js/main.chunk.js" as="script">
+    <link rel="preload" href="/static/js/vendors.chunk.js" as="script">
+    
+    <!-- Title -->
+    <title>3D Car Game</title>
+    
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Theme color for browser UI -->
+    <meta name="theme-color" content="#121212">
+</head>
+<body>
+    <!-- No-script fallback -->
+    <noscript>
+        <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+            You need to enable JavaScript to run this app.
+        </div>
+    </noscript>
+    
+    <!-- Root element where React will mount the application -->
+    <div id="root"></div>
+    
+    <!-- Loading indicator (shown before JS loads) -->
+    <div id="loader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-family: sans-serif;">
+        <p>Loading 3D Car Game...</p>
+    </div>
+    
+    <!-- Controls help overlay -->
+    <div id="controls-help" style="display: none; position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-family: sans-serif; pointer-events: none;">
+        <p>Controls:</p>
+        <p>W/↑: Drive forward</p>
+        <p>S/↓: Drive backward</p>
+        <p>A/←: Turn left</p>
+        <p>D/→: Turn right</p>
+    </div>
+    
+    <!-- Script to show controls help -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('controls-help').style.display = 'block';
+            document.getElementById('loader').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
