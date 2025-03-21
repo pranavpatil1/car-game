@@ -13,61 +13,12 @@ import Car from './Car';
 import Ramp from './Ramp';
 import Building from './Building';
 import Platform from './Platform';
+import Environment from './Environment';
+import GlassBuilding from './GlassBuilding';
 
 // Define interface for CameraController props
 interface CameraControllerProps {
   target: React.RefObject<any>;
-}
-
-/**
- * Ground component representing the plane
- */
-function Ground() {
-  const [ref] = usePlane(() => ({ 
-    rotation: [-Math.PI / 2, 0, 0],
-    position: [0, 0, 0]
-  }));
-
-  return (
-    <mesh ref={ref} receiveShadow>
-      <planeGeometry args={[100, 100]} />
-      <meshStandardMaterial color="#8bc34a" />
-    </mesh>
-  );
-}
-
-/**
- * Camera controller that follows the car
- */
-function CameraController({ target }: CameraControllerProps) {
-  const cameraRef = useRef<ThreePerspectiveCamera>(null);
-  // 45-degree angle offset with distance behind the car
-  const offset = new Vector3(-10, 10, -10); 
-  
-  useFrame(() => {
-    if (cameraRef.current && target.current) {
-      // Get car position
-      const targetPosition = target.current.position;
-      
-      // Set camera position to follow car with offset
-      const newPosition = new Vector3().copy(targetPosition).add(offset);
-      cameraRef.current.position.copy(newPosition);
-      
-      // Look at car
-      cameraRef.current.lookAt(targetPosition);
-    }
-  });
-
-  return (
-    <PerspectiveCamera
-      ref={cameraRef}
-      makeDefault
-      position={[0, 10, -10]} // Initial position
-      fov={90}
-      near={0.1}
-      far={1000}
-    />
-  );
 }
 
 /**
@@ -102,8 +53,6 @@ function App() {
           shadow-camera-bottom={-20}
         />
         
-        <CameraController target={carRef} />
-        
         <Physics
           gravity={[0, -9.81, 0]}
           defaultContactMaterial={{
@@ -111,8 +60,8 @@ function App() {
             restitution: 0.3,
           }}
         >
-          <Ground />
-          <Car position={[0, 2, 0]} ref={carRef} />
+          <Environment />
+          <Car position={[1, 1, 1]} ref={carRef} />
           
           {/* Ramp */}
           <Ramp 
@@ -121,18 +70,19 @@ function App() {
             size={[8, 1, 15]} 
           />
           
-          {/* Building */}
-          <Building 
-            position={[20, 5, -15]} 
+          {/* Glass Building with correct height positioning */}
+          <GlassBuilding 
+            position={[15, 5, -15]} 
             size={[10, 10, 10]} 
+            color="#66aadd"
           />
           
           {/* Moving Platform */}
           <Platform 
-            position={[20, 1, -5]} 
+            position={[18, -3, -5]} 
             size={[5, 0.5, 5]} 
-            range={9} 
-            speed={0.5} 
+            range={6} 
+            speed={2} 
           />
         </Physics>
       </Canvas>

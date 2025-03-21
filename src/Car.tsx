@@ -1,18 +1,19 @@
 import React, { useRef, forwardRef, useImperativeHandle, ForwardedRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useCompoundBody, useRaycastVehicle, useBox } from '@react-three/cannon';
-import { useKeyboardControls } from '@react-three/drei';
+import { PerspectiveCamera, useKeyboardControls } from '@react-three/drei';
 import { Object3D, SpotLight } from 'three';
 
 // Define the props interface for the Car component
 interface CarProps {
   position?: [number, number, number];
+  children?: React.ReactNode;
 }
 
 /**
  * Low-poly car component with basic physics and controls
  */
-const Car = forwardRef<any, CarProps>(({ position = [0, 1, 0] }, ref) => {
+const Car = forwardRef<any, CarProps>(({ position = [0, 1, 0], children }, ref) => {
   const [, getKeys] = useKeyboardControls();
   
   // Refs for headlights
@@ -38,7 +39,16 @@ const Car = forwardRef<any, CarProps>(({ position = [0, 1, 0] }, ref) => {
   }), chassisRef);
 
   // Expose the chassis ref to parent components
-  useImperativeHandle(ref, () => chassisRef.current);
+  useImperativeHandle(ref, () => ({
+    get position() {
+      return (chassisRef.current as any)?.position;
+    },
+    get rotation() {
+      return (chassisRef.current as any)?.rotation;
+    },
+    // Return the entire chassis ref for direct access
+    chassisRef: chassisRef.current
+  }));
 
   // Wheels
   const wheelRadius = 0.4;
@@ -278,6 +288,18 @@ const Car = forwardRef<any, CarProps>(({ position = [0, 1, 0] }, ref) => {
           <boxGeometry args={[0.3, 0.2, 0.1]} />
           <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={1} />
         </mesh>
+        
+        {/* Third-person camera */}
+        <group position={[0, 3, 7]} rotation={[0, 0, 0]}>
+          <PerspectiveCamera
+            makeDefault
+            fov={100}
+            near={0.5}
+            far={1000}
+          />
+        </group>
+        
+        {children}
       </group>
       
       {/* Wheels - with sporty rims */}
